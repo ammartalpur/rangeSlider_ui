@@ -1,5 +1,9 @@
-import rangeSlider from "../src/index.js";
+const rangeSlider = require("../src/index.js");
 
 const range = rangeSlider();
+document.body.innerHTML = `<h1> Range Slider</h1>`;
+const main = document.createElement("div");
 
-document.body.append(range);
+main.append(range);
+
+document.body.append(main);
