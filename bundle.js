@@ -1,7 +1,7 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
 const rangeSlider = require("../src/index.js");
 
-const range = rangeSlider();
+const range = rangeSlider({ min: 0, max: 100 });
 document.body.innerHTML = `<h1> Range Slider</h1>`;
 const main = document.createElement("div");
 
@@ -11,7 +11,8 @@ document.body.append(main);
 
 },{"../src/index.js":2}],2:[function(require,module,exports){
 module.exports = rangeSlider;
-function rangeSlider() {
+function rangeSlider(opts) {
+  const { min, max } = opts || { min: 0, max: 100 };
   const el = document.createElement("div");
   el.classList.add("container");
   const shadow = el.attachShadow({ mode: "closed" });
@@ -20,7 +21,9 @@ function rangeSlider() {
 
   const input = document.createElement("input");
   input.type = "range";
-
+  input.oninput = handle_input;
+  input.min = min;
+  input.max = max;
   const bar = document.createElement("div");
   bar.classList.add("bar");
 
@@ -33,6 +36,12 @@ function rangeSlider() {
   bar.append(ruler, fill);
   shadow.append(style, input, bar);
   return el;
+
+  function handle_input(e) {
+    const val = Number(e.target.value);
+    console.log(val);
+    fill.style.width = `${(val / max) * 100}%`;
+  }
 }
 
 function getTheme() {
@@ -43,7 +52,7 @@ function getTheme() {
   :host {
   --white: hsl(0, 0%, 100%, 1);
   --transparent: hsl(0, 0%, 0%, 0);
-  --gray: hsl(0, 0%, 86%, 1);
+  --grey: hsl(0, 0%, 86%, 1);
   --blue: hsl(207, 88%, 66%, 1);
   position: relative;
   width: 100%;
@@ -71,7 +80,7 @@ input {
   width: 100%;
   border-radius: 8px;
   overflow: hidden;
-  background-color: var(--gray);
+  background-color: var(--grey);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -97,8 +106,49 @@ input {
   position: absolute;
   height: 100%;
   width: 30%;
-  background-color: var(--grey);
+  background-color: var(--blue);
 }
+input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 1px solid var(--gray); /* ✅ corrected */
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, .4);
+  transition: background-color .3s, box-shadow .15s linear;
+}
+  input::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 1px solid var(--gray); /* Corrected spelling */
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s, box-shadow 0.15s linear;
+}
+
+input::-webkit-slider-thumb:hover {
+  box-shadow: 0 0 14px rgba(94, 176, 245, 0.8); /* Corrected alpha */
+}
+
+/* Firefox thumb styles */
+input::-moz-range-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: var(--white);
+  border: 1px solid var(--grey);
+  cursor: pointer;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.4);
+  transition: background-color 0.3s, box-shadow 0.15s linear;
+}
+
+input::-moz-range-thumb:hover {
+  box-shadow: 0 0 14px rgba(94 , 176 , 245 , .8)
 
  
   `;
