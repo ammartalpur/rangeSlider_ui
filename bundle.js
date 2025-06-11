@@ -1,48 +1,46 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-const rangeSlider = require("../src/index.js");
+const rangeSlider = require("../src/index.js")
 
-const range = rangeSlider({ min: 0, max: 100 });
-document.body.innerHTML = `<h1> Range Slider</h1>`;
-const main = document.createElement("div");
+const range = rangeSlider({ min: 0, max: 100 })
+document.body.innerHTML = `<h1> Range Slider</h1>`
+const main = document.createElement("div")
 
-main.append(range);
+main.append(range)
 
-document.body.append(main);
+document.body.append(main)
 
 },{"../src/index.js":2}],2:[function(require,module,exports){
-module.exports = rangeSlider;
-function rangeSlider(opts) {
-  const { min, max } = opts || { min: 0, max: 100 };
-  const el = document.createElement("div");
-  el.classList.add("container");
-  const shadow = el.attachShadow({ mode: "closed" });
-  const style = document.createElement("style");
-  style.textContent = getTheme();
+module.exports = range_slider
 
-  const input = document.createElement("input");
-  input.type = "range";
-  input.oninput = handle_input;
-  input.min = min;
-  input.max = max;
-  const bar = document.createElement("div");
-  bar.classList.add("bar");
+function range_slider(opts) {
+  const { min, max } = opts || { min: 0, max: 100 }
+  const el = document.createElement("div")
+  el.classList.add("container")
 
-  const ruler = document.createElement("div");
-  ruler.classList.add("ruler");
+  const shadow = el.attachShadow({ mode: "closed" })
 
-  const fill = document.createElement("div");
-  fill.classList.add("fill");
+  shadow.innerHTML = `
+    <style>${getTheme()}</style>
+    <input type="range" min="${min}" max="${max}" />
+    <div class="bar">
+      <div class="ruler"></div>
+      <div class="fill"></div>
+    </div>
+  `;
 
-  bar.append(ruler, fill);
-  shadow.append(style, input, bar);
-  return el;
+  const [style, input, bar] = shadow.children
+  const fill = shadow.querySelector(".fill")
+
+  input.oninput = handle_input
 
   function handle_input(e) {
-    const val = Number(e.target.value);
-    console.log(val);
-    fill.style.width = `${(val / max) * 100}%`;
+    const val = Number(e.target.value)
+    fill.style.width = `${(val / max) * 100}%`
   }
+
+  return el
 }
+
 
 function getTheme() {
   return `

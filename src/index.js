@@ -1,36 +1,34 @@
-module.exports = rangeSlider;
-function rangeSlider(opts) {
-  const { min, max } = opts || { min: 0, max: 100 };
-  const el = document.createElement("div");
-  el.classList.add("container");
-  const shadow = el.attachShadow({ mode: "closed" });
-  const style = document.createElement("style");
-  style.textContent = getTheme();
+module.exports = range_slider
 
-  const input = document.createElement("input");
-  input.type = "range";
-  input.oninput = handle_input;
-  input.min = min;
-  input.max = max;
-  const bar = document.createElement("div");
-  bar.classList.add("bar");
+function range_slider(opts) {
+  const { min, max } = opts || { min: 0, max: 100 }
+  const el = document.createElement("div")
+  el.classList.add("container")
 
-  const ruler = document.createElement("div");
-  ruler.classList.add("ruler");
+  const shadow = el.attachShadow({ mode: "closed" })
 
-  const fill = document.createElement("div");
-  fill.classList.add("fill");
+  shadow.innerHTML = `
+    <style>${getTheme()}</style>
+    <input type="range" min="${min}" max="${max}" />
+    <div class="bar">
+      <div class="ruler"></div>
+      <div class="fill"></div>
+    </div>
+  `;
 
-  bar.append(ruler, fill);
-  shadow.append(style, input, bar);
-  return el;
+  const [style, input, bar] = shadow.children
+  const fill = shadow.querySelector(".fill")
+
+  input.oninput = handle_input
 
   function handle_input(e) {
-    const val = Number(e.target.value);
-    console.log(val);
-    fill.style.width = `${(val / max) * 100}%`;
+    const val = Number(e.target.value)
+    fill.style.width = `${(val / max) * 100}%`
   }
+
+  return el
 }
+
 
 function getTheme() {
   return `
